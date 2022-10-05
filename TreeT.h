@@ -47,7 +47,7 @@ private:
     // Used for Node removal
     void RemoveHelper(Node*& subtree, T value);
     void DeleteNode(Node*& subtree);
-    void GetPredecessor(Node* curr, T& value);
+    T GetPredecessor(Node* curr);
 
     void CopyHelper(Node*& thisTree, Node* otherTree);
 

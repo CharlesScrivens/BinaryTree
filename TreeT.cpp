@@ -75,6 +75,28 @@ template<class T>
 void TreeT<T>::Remove(T value)
 {
 
+    RemoveHelper(root, value);
+/*
+    Node* curr = root;
+
+    while (curr != nullptr)
+    {
+        if (value < curr->value)
+        {
+            curr = curr->left;
+        }
+        else if (value > curr->value)
+        {
+            curr = curr->right;
+        }
+        else
+        {
+            //Value is found in tree -- Time to delete
+            DeleteNode(curr);
+        }
+    }
+*/
+
 }
 
 template<class T>
@@ -128,19 +150,70 @@ void TreeT<T>::DestroyTree(TreeT::Node *node)
 template<class T>
 void TreeT<T>::RemoveHelper(TreeT::Node *&subtree, T value)
 {
+    Node* curr = root;
+
+    while (curr != nullptr)
+    {
+        if (value < curr->value)
+        {
+            curr = curr->left;
+        }
+        else if (value > curr->value)
+        {
+            curr = curr->right;
+        }
+        else
+        {
+            //Value is found in tree -- Time to delete
+            DeleteNode(curr);
+        }
+    }
+}
+
+template<class T>
+void TreeT<T>::DeleteNode(TreeT::Node* &node)
+{
+    Node* tempNode = node;
+
+    //No Children
+    //One Child
+    //Two Children
+    if (node->left == nullptr && node->right == nullptr)
+    {
+        delete node;
+        node = nullptr;
+    }
+    else if (node->left == nullptr)
+    {
+        node = node->right;
+        delete tempNode;
+    }
+    else if (node->right == nullptr)
+    {
+        node = node->left;
+        delete tempNode;
+    }
+    else
+    {
+        //Find largest value of left subtree
+        T predVal = GetPredecessor(node->left);
+        node->value = predVal; //Changes Node value with predVal
+        RemoveHelper(node->left, predVal);
+
+    }
 
 }
 
 template<class T>
-void TreeT<T>::DeleteNode(TreeT::Node *&subtree)
+T TreeT<T>::GetPredecessor(TreeT::Node* curr)
 {
+    //Go right until the next value might be nullptr
+    while (curr->right != nullptr)
+    {
+        curr = curr->right;
+    }
 
-}
-
-template<class T>
-void TreeT<T>::GetPredecessor(TreeT::Node *curr, T &value)
-{
-
+    return curr->value;
 }
 
 template<class T>
