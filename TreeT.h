@@ -17,6 +17,7 @@ template<class T>
 class TreeT {
 public:
     TreeT();
+    TreeT(const TreeT, &otherTree); //FIX THIS
     ~TreeT();
 
     TreeT& operator=(const TreeT& otherTree);
@@ -52,7 +53,7 @@ private:
     void CopyHelper(Node*& thisTree, Node* otherTree);
 
     // Used for iterator
-    queue<T> iterArr;     // queue used for the iterator
+    queue<T> iterQueue;     // queue used for the iterator
     void PlacePreOrder(Node* node);
     void PlacePostOrder(Node* node);
     void PlaceInOrder(Node* node);

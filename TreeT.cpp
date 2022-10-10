@@ -11,12 +11,20 @@ TreeT<T>::TreeT()
 template<class T>
 TreeT<T>::~TreeT()
 {
-
+    // Uses destroy tree as helper function
+    // Wrapper used to call recursive function
+    DestroyTree(root); // destroy the tree under root
 }
 
 template<class T>
 TreeT<T> &TreeT<T>::operator=(const TreeT &otherTree)
 {
+    if (&otherTree != this)
+    {
+        CopyHelper(otherTree);
+    }
+
+
     return *this;
 }
 
@@ -129,22 +137,17 @@ int TreeT<T>::Size()
     return 0;
 }
 
-template<class T>
-void TreeT<T>::ResetIterator(Order traverseOrder)
-{
 
-}
-
-template<class T>
-T TreeT<T>::GetNextItem()
-{
-    return nullptr;
-}
 
 template<class T>
 void TreeT<T>::DestroyTree(TreeT::Node *node)
 {
+    if (node == nullptr)
+        return;
 
+    DestroyTree(node->left); // destroying left subtree
+    DestroyTree(node->right); // destroying right subtree
+    delete node; // destroy subroot
 }
 
 template<class T>
@@ -219,23 +222,78 @@ T TreeT<T>::GetPredecessor(TreeT::Node* curr)
 template<class T>
 void TreeT<T>::CopyHelper(TreeT::Node *&thisTree, TreeT::Node *otherTree)
 {
+    if (otherTree == nullptr)
+    {
+        thisTree = nullptr;
+    }
 
+    thisTree = new Node;
+    thisTree->value = otherTree->value;
+    CopyHelper(thisTree->left,otherTree->left);
+    CopyHelper(thisTree->right, otherTree->right);
 }
+
+template<class T>
+void TreeT<T>::ResetIterator(Order traverseOrder)
+{
+    if (traverseOrder == IN_ORDER)
+    {
+        PlaceInOrder(root);
+    }
+    else if (traverseOrder == PRE_ORDER)
+    {
+        PlacePreOrder(root);
+    }
+    else
+    {
+        PlacePostOrder(root);
+    }
+}
+
+template<class T>
+T TreeT<T>::GetNextItem()
+{
+    T retVal = iterQueue.front();
+    iterQueue.pop();
+    return retVal;
+}
+
 
 template<class T>
 void TreeT<T>::PlacePreOrder(TreeT::Node *node)
 {
+    if (node == nullptr)
+    {
+        return;
+    }
 
+    iterQueue.push(node->value);    // put the curr value in the queue
+    PlacePreOrder(node->left);   // put all the nodes on the left subtree into the queue
+    PlacePreOrder(node->right);  // put all of the nodes on the right subtree into the queue
 }
 
 template<class T>
 void TreeT<T>::PlacePostOrder(TreeT::Node *node)
 {
+    if (node == nullptr)
+    {
+        return;
+    }
 
+    PlacePreOrder(node->left);   // put all the nodes on the left subtree into the queue
+    PlacePreOrder(node->right);  // put all of the nodes on the right subtree into the queue
+    iterQueue.push(node->value);    // put the curr value in the queue
 }
 
 template<class T>
 void TreeT<T>::PlaceInOrder(TreeT::Node *node)
 {
+    if (node == nullptr)
+    {
+        return;
+    }
 
+    PlaceInOrder(node->left);   // put all the nodes on the left subtree into the queue
+    iterQueue.push(node->value);    // put the curr value in the queue
+    PlaceInOrder(node->right);  // put all of the nodes on the right subtree into the queue
 }
